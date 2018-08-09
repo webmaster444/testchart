@@ -1,0 +1,44 @@
+* {
+	box-sizing: border-box;
+}
+
+.bar-chart-wrap {
+	margin: 20px 60px 0 40px;
+}
+
+.date-wrapper {
+	margin: 100px 60px 0 120px;
+}
+
+table {
+	margin-top: 40px;
+	margin-left: 40px;
+	border: 1px solid grey;
+	border-spacing: 0;
+	font-size: 14px;
+	color: grey;
+	cursor: pointer;
+}
+
+tr {
+	/**/
+}
+
+td {
+	height: 30px;
+	border-width: 0 1px 1px 0;
+	border-style: solid;
+	border-color: grey;
+}
+
+td:first-child {
+	padding-left: 10px;
+}
+
+td:last-child {
+	border-right-width: 0;
+}
+
+tr:last-child > td {
+	border-bottom-width: 0;
+}

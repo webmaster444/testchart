@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dashboard</title>
+		<link type="text/css" href="vendor/jquery-ui.css" rel="stylesheet" />
+		<link type="text/css" href="css/main.css" rel="stylesheet" />
+	</head>
+	<body>
+
+		<div class="date-wrapper">
+			<input type="text" id="date-picker">
+		</div>
+
+		<div class="bar-chart-wrap">
+			<canvas id="bar-chart" width="700" height="250"></canvas>
+			<div class="message" style="display: none;">There is no data to display.</div>
+		</div>
+
+		<div class="table-wrapper"></div>
+
+		<script type="text/javascript" src="vendor/jquery.min.js"></script>
+		<script type="text/javascript" src="vendor/jquery-ui.js"></script>
+		<script type="text/javascript" src="vendor/Chart.js"></script>
+		<script type="text/javascript" src="vendor/Chart.bundle.js"></script>
+		<script type="text/javascript" src="js/data.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+	</body>
+</html>
