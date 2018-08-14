@@ -45,10 +45,9 @@ function draw_table(date) {
 		for (let j in keys) {			
 			table += "<tr>";
 			table += "<td style='width: 100px;'>" + keys[j] + "</td>";
-			var colorScale = d3.scaleSequential(d3.interpolateRainbow).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
+			var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
 
-			for (let k in data[date][i][keys[j]]) {
-				console.log(colorScale(data[date][i][keys[j]][k]));
+			for (let k in data[date][i][keys[j]]) {				
 				table += "<td style='background:"+colorScale(data[date][i][keys[j]][k])+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
 			}
 
@@ -102,11 +101,10 @@ $(document).ready(function() {
     var chart_data;
     
     var xScale = d3.scaleBand()               
-    
     var xInScale = d3.scaleBand();
     
     var yScale = d3.scaleLinear()
-    
+    var divTooltip = d3.select("body").append("div").attr("class", "toolTip");
     var color = d3.scaleOrdinal()
         .range(["#5DDEC9", "#EF64AD", "#7b6888", "#BA67E5", "#E0E23B", "#d0743c", "#ff8c00"]);                   
     
@@ -186,6 +184,22 @@ $(document).ready(function() {
             .attr("height", 0)
             .attr("fill", function(d) { return color(Object.keys(d)); })
             .attr("transform", function(d) {return "translate(" + [xInScale(Object.keys(d)), chartHeight] + ")" })
+            .on("mousemove", function(d){                           
+	            divTooltip.style("left", d3.event.pageX+10+"px");
+	            divTooltip.style("top", d3.event.pageY-25+"px");
+	            divTooltip.style("display", "inline-block");
+	            var x = d3.event.pageX, y = d3.event.pageY
+	            var elements = document.querySelectorAll(':hover');	            
+	            l = elements.length
+	            l = l-1
+	            elementData = elements[l].__data__;
+
+	            var activeBar = window.activeBar = elements[l];
+	            divTooltip.html("<div style='width:15px;height:15px;display:inline-block;margin-right: 10px;vertical-align: text-bottom;background:"+color(Object.keys(d))+"'></div>"+(Object.keys(d)) +":" + Object.values(d));
+	            d3.select(activeBar).style('opacity', 1);
+	        }).on('mouseout',function(d){
+	        	divTooltip.style("display", "none");
+	        })
                 
        bar.merge(newBar).transition(t)
             .attr("height", function(d) { return chartHeight - yScale(Object.values(d)); })
