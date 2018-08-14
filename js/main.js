@@ -40,7 +40,8 @@ function draw_table(date) {
 	var table = "";
 
 	for (let i in data[date]) {		
-		table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
+		// table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
+		table += "<table id='table_"+i+"'><tbody>";
 		var keys = Object.keys(data[date][i]);
 
 		table +='<tr><th></th>';
@@ -95,6 +96,14 @@ $(document).ready(function() {
 	$(window).resize(function() {
 		draw_chart(currentDate, currentTableNumber);
 		draw_table(currentDate);
+	});
+
+	$(document).on('click','#table_0 td',function() {
+		$('td').removeClass('highlight');
+		$('rect').removeClass('highlighted-bar');
+	    var nthKey = $(this).index();
+	    var nthGroup = $(this).parent().index();
+	    $(".contry:nth-child("+nthKey+") rect:nth-child("+nthGroup+")").addClass('highlighted-bar');
 	});
 
 });

@@ -64,3 +64,11 @@ td.highlight{
 	border: 1px solid black;
 	color: black;
 }
+
+rect{
+	opacity: .7;
+}
+
+.highlighted-bar{
+	opacity: 1;
+}
