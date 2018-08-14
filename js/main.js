@@ -38,17 +38,18 @@ function draw_table(date) {
 
 	var table = "";
 
-	for (let i in data[date]) {
-		console.log(i);
+	for (let i in data[date]) {		
 		table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
 		var keys = Object.keys(data[date][i]);
 
-		for (let j in keys) {
+		for (let j in keys) {			
 			table += "<tr>";
 			table += "<td style='width: 100px;'>" + keys[j] + "</td>";
+			var colorScale = d3.scaleSequential(d3.interpolateRainbow).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
 
 			for (let k in data[date][i][keys[j]]) {
-				table += "<td style='text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
+				console.log(colorScale(data[date][i][keys[j]][k]));
+				table += "<td style='background:"+colorScale(data[date][i][keys[j]][k])+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
 			}
 
 			table += "</tr>";
