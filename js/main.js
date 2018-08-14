@@ -193,12 +193,9 @@ $(document).ready(function() {
 	            l = elements.length
 	            l = l-1
 	            elementData = elements[l].__data__;
-
 	            var index = $(elements[l].parentNode).index();
-	            console.log(labels[index]);
-	            // var activeBar = window.activeBar = elements[l];
-	            divTooltip.html("<span>"+labels[index]+"</span><br><div style='width:15px;height:15px;display:inline-block;margin-right: 10px;vertical-align: text-bottom;background:"+color(Object.keys(d))+"'></div>"+(Object.keys(d)) +":" + Object.values(d));
-	            // d3.select(activeBar).style('opacity', 1);
+	            	            
+	            divTooltip.html("<span>"+labels[index]+"</span><br><div style='width:15px;height:15px;display:inline-block;margin-right: 10px;vertical-align: text-bottom;background:"+color(Object.keys(d))+"'></div>"+(Object.keys(d)) +":" + Object.values(d));	            
 	        }).on('mouseout',function(d){
 	        	divTooltip.style("display", "none");
 	        })
