@@ -4,6 +4,7 @@ var currentTableNumber = null;
 var labels =  ["01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
 var legends;
 function draw_chart(date, tableNumber) {
+	$('td').removeClass('highlight');
 	currentDate = date;
 	currentTableNumber = tableNumber;
 
@@ -67,8 +68,7 @@ function getToday() {
 	return d.getFullYear() + "-" + (month < 10 ? '0' : '') + month + "-" + (day < 10 ? '0' : '') + day;
 }
 
-$(document).ready(function() {
-
+$(document).ready(function() {	
 	currentDate = getToday();
 	currentTableNumber = 0;
 
@@ -198,6 +198,15 @@ $(document).ready(function() {
 	            divTooltip.html("<span>"+labels[index]+"</span><br><div style='width:15px;height:15px;display:inline-block;margin-right: 10px;vertical-align: text-bottom;background:"+color(Object.keys(d))+"'></div>"+(Object.keys(d)) +":" + Object.values(d));	            
 	        }).on('mouseout',function(d){
 	        	divTooltip.style("display", "none");
+	        }).on('mousedown',function(d){
+	            var elements = document.querySelectorAll(':hover');	            
+	            l = elements.length
+	            l = l-1
+	            elementData = elements[l].__data__;
+	            var index = $(elements[l].parentNode).index();
+	            index +=2;
+	            $("td").removeClass('highlight');
+	        	$( "td:nth-child("+index+")" ).addClass('highlight');
 	        })
                 
        bar.merge(newBar).transition(t)
