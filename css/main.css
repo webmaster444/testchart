@@ -71,4 +71,5 @@ rect{
 
 .highlighted-bar{
 	opacity: 1;
+	stroke: black;
 }
