@@ -11,15 +11,17 @@
 			<input type="text" id="date-picker">
 		</div>
 
-		<div class="bar-chart-wrap">
-			<canvas id="bar-chart" width="700" height="250"></canvas>
+		<div class="bar-chart-wrap">			
 			<div class="message" style="display: none;">There is no data to display.</div>
+			<div  id="bar-chart-container">
+			</div>
 		</div>
 
 		<div class="table-wrapper"></div>
 
 		<script type="text/javascript" src="vendor/jquery.min.js"></script>
 		<script type="text/javascript" src="vendor/jquery-ui.js"></script>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script type="text/javascript" src="vendor/Chart.js"></script>
 		<script type="text/javascript" src="vendor/Chart.bundle.js"></script>
 		<script type="text/javascript" src="js/data.js"></script>
