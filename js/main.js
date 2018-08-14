@@ -147,7 +147,7 @@ $(document).ready(function() {
             
         xScale.domain(labels)
             .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
-            
+
         // var ageNames = Object.keys(data);        
         xInScale.domain(legends).range([0, xScale.bandwidth()])
                 
@@ -184,7 +184,7 @@ $(document).ready(function() {
             .attr("height", 0)
             .attr("fill", function(d) { return color(Object.keys(d)); })
             .attr("transform", function(d) {return "translate(" + [xInScale(Object.keys(d)), chartHeight] + ")" })
-            .on("mousemove", function(d){                           
+            .on("mousemove", function(d){                                              			         
 	            divTooltip.style("left", d3.event.pageX+10+"px");
 	            divTooltip.style("top", d3.event.pageY-25+"px");
 	            divTooltip.style("display", "inline-block");
@@ -194,9 +194,11 @@ $(document).ready(function() {
 	            l = l-1
 	            elementData = elements[l].__data__;
 
-	            var activeBar = window.activeBar = elements[l];
-	            divTooltip.html("<div style='width:15px;height:15px;display:inline-block;margin-right: 10px;vertical-align: text-bottom;background:"+color(Object.keys(d))+"'></div>"+(Object.keys(d)) +":" + Object.values(d));
-	            d3.select(activeBar).style('opacity', 1);
+	            var index = $(elements[l].parentNode).index();
+	            console.log(labels[index]);
+	            // var activeBar = window.activeBar = elements[l];
+	            divTooltip.html("<span>"+labels[index]+"</span><br><div style='width:15px;height:15px;display:inline-block;margin-right: 10px;vertical-align: text-bottom;background:"+color(Object.keys(d))+"'></div>"+(Object.keys(d)) +":" + Object.values(d));
+	            // d3.select(activeBar).style('opacity', 1);
 	        }).on('mouseout',function(d){
 	        	divTooltip.style("display", "none");
 	        })
