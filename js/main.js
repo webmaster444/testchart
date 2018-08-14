@@ -43,6 +43,11 @@ function draw_table(date) {
 		table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
 		var keys = Object.keys(data[date][i]);
 
+		table +='<tr><th></th>';
+		for(let lindex in labels){
+			table+="<th>"+labels[lindex]+"</th>";
+		}
+		table +="</tr>";
 		for (let j in keys) {			
 			table += "<tr>";
 			table += "<td style='width: 100px;'>" + keys[j] + "</td>";
@@ -123,10 +128,10 @@ $(document).ready(function() {
     }
     
     function setSize(data) {
-        width = 1780;
+        width = 1800;
         height = 500;
     
-        margin = {top:20, left:100, bottom:40, right:30 };
+        margin = {top:20, left:20, bottom:40, right:30 };
         
         
         chartWidth = width - (margin.left+margin.right)
