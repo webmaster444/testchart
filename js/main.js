@@ -180,10 +180,8 @@ $(document).ready(function() {
         xScale.domain(labels)
             .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
 
-        td_width = xScale.step();
-        console.log(td_width);
-        console.log(xScale.step());
-        // var ageNames = Object.keys(data);        
+        td_width = xScale.step();        
+        
         xInScale.domain(legends).range([0, xScale.bandwidth()])
                 
         var a= [];
