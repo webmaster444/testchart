@@ -52,10 +52,25 @@ function draw_table(date) {
 		for (let j in keys) {			
 			table += "<tr>";
 			table += "<td style='width: 100px;'>" + keys[j] + "</td>";
-			var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
+			
+			// var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
+			var colorScale = d3.scaleLinear().domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])])
+      .interpolate(d3.interpolateHcl)
+      .range([d3.rgb("#45ad45"), d3.rgb('#d21717')]);
+
+
 
 			for (let k in data[date][i][keys[j]]) {				
-				table += "<td style='background:"+colorScale(data[date][i][keys[j]][k])+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
+
+				var backColor = "";
+				if(keys[j]=="Breaches"){
+					backColor = "color:white;background:" + colorScale(data[date][i][keys[j]][k]);
+				}else{
+					backColor = "background: white";
+				}
+
+				// table += "<td style='background:"+colorScale(data[date][i][keys[j]][k])+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
+				table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
 			}
 
 			table += "</tr>";
@@ -140,7 +155,7 @@ $(document).ready(function() {
         width = 1800;
         height = 500;
     
-        margin = {top:20, left:20, bottom:40, right:30 };
+        margin = {top:20, left:100, bottom:40, right:30 };
         
         
         chartWidth = width - (margin.left+margin.right)
