@@ -153,10 +153,11 @@ $(document).ready(function() {
     }
     
     function setSize(data) {
-        width = 1800;
+        // width = 1800;
+        width = $('#bar-chart-container').innerWidth();
         height = 500;
     
-        margin = {top:20, left:100, bottom:40, right:30 };
+        margin = {top:20, left:100, bottom:40, right:0 };
         
         
         chartWidth = width - (margin.left+margin.right)
