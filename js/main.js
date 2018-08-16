@@ -3,6 +3,7 @@ var currentDate = null;
 var currentTableNumber = null;
 var labels =  ["01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
 var legends;
+var td_width;
 function draw_chart(date, tableNumber) {
 	$('td').removeClass('highlight');
 	currentDate = date;
@@ -35,7 +36,7 @@ function draw_table(date) {
 		return;
 	}
 
-	var td_width = ($("#bar-chart-container").width() - 120.4) / 24 - 1;
+	// var td_width = ($("#bar-chart-container").width() - 120.4) / 24 - 1;
 
 	var table = "";
 
@@ -179,6 +180,9 @@ $(document).ready(function() {
         xScale.domain(labels)
             .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
 
+        td_width = xScale.step();
+        console.log(td_width);
+        console.log(xScale.step());
         // var ageNames = Object.keys(data);        
         xInScale.domain(legends).range([0, xScale.bandwidth()])
                 
@@ -188,7 +192,7 @@ $(document).ready(function() {
         }));
         yMax += 2;
         
-        yScale.domain([0, yMax]).range([chartHeight, 0])
+        yScale.domain([0, yMax]).range([chartHeight, 0])        
     }
     
     function drawChart(nested) {    	
