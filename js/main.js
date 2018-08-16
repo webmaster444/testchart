@@ -115,6 +115,7 @@ $(document).ready(function() {
 
 	$(document).on('click','#table_0 td',function() {
 		$('td').removeClass('highlight');
+		$(this).addClass('highlight');
 		$('rect').removeClass('highlighted-bar');
 	    var nthKey = $(this).index();
 	    var nthGroup = $(this).parent().index();
@@ -234,8 +235,13 @@ $(document).ready(function() {
 	            elementData = elements[l].__data__;
 	            var index = $(elements[l].parentNode).index();
 	            index +=2;
+
+	    		var nthGroup = $(this).index();
+	    		nthGroup += 2;	    		
+	            $('rect.bar').removeClass('highlighted-bar');
 	            $("td").removeClass('highlight');
-	        	$( "td:nth-child("+index+")" ).addClass('highlight');
+	            $(this).addClass('highlighted-bar');
+	        	$( "#table_0 tr:nth-child("+nthGroup+") td:nth-child("+index+")" ).addClass('highlight');
 	        })
                 
        bar.merge(newBar).transition(t)
