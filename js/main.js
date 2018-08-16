@@ -64,7 +64,7 @@ function draw_table(date) {
 
 				var backColor = "";
 				if(keys[j]=="Breaches"){
-					backColor = "color:white;background:" + colorScale(data[date][i][keys[j]][k]);
+					backColor = "color:black;background:" + colorScale(data[date][i][keys[j]][k]);
 				}else{
 					backColor = "background: white";
 				}
