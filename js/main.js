@@ -40,6 +40,7 @@ function draw_table(date) {
 
 	var table = "";
 
+	var table_breaches = "<table id='table_breaches'><tr>";
 	for (let i in data[date]) {		
 		// table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
 		table += "<table id='table_"+i+"'><tbody>";
@@ -51,9 +52,13 @@ function draw_table(date) {
 		}
 		table +="</tr>";
 		for (let j in keys) {			
-			table += "<tr>";
-			table += "<td style='width: 100px;'>" + keys[j] + "</td>";
-			
+			if(keys[j]=="Breaches"){
+				table_breaches += "<td style='width: 100px;'>" + keys[j] + "</td>";
+			}else{
+				table += "<tr>";			
+				table += "<td style='width: 100px;'>" + keys[j] + "</td>";
+			}			
+
 			// var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
 			var colorScale = d3.scaleLinear().domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])])
       .interpolate(d3.interpolateHcl)
@@ -66,12 +71,11 @@ function draw_table(date) {
 				var backColor = "";
 				if(keys[j]=="Breaches"){
 					backColor = "color:black;background:" + colorScale(data[date][i][keys[j]][k]);
+					table_breaches += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
 				}else{
 					backColor = "background: white";
-				}
-
-				// table += "<td style='background:"+colorScale(data[date][i][keys[j]][k])+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
-				table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
+					table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
+				}							
 			}
 
 			table += "</tr>";
@@ -81,6 +85,7 @@ function draw_table(date) {
 	}
 
 	$(".table-wrapper").html(table);
+	$(".breach-table-wrapper").html(table_breaches);
 }
 
 function getToday() {
@@ -123,6 +128,14 @@ $(document).ready(function() {
 	    $(".contry:nth-child("+nthKey+") rect:nth-child("+nthGroup+")").addClass('highlighted-bar');
 	});
 
+	$(document).on('click','#table_breaches td',function() {
+		$('td').removeClass('highlight');
+		$(this).addClass('highlight');
+		$('rect').removeClass('highlighted-bar');
+	    var nthKey = $(this).index();
+	    var nthGroup = $(this).parent().index();
+	    $(".contry:nth-child("+nthKey+") rect:nth-child(3)").addClass('highlighted-bar');
+	});
 });
 
 	var width,height
@@ -240,11 +253,16 @@ $(document).ready(function() {
 	            index +=2;
 
 	    		var nthGroup = $(this).index();
-	    		nthGroup += 2;	    		
+	    		nthGroup += 2;	
+	    		console.log(nthGroup);
 	            $('rect.bar').removeClass('highlighted-bar');
 	            $("td").removeClass('highlight');
 	            $(this).addClass('highlighted-bar');
-	        	$( "#table_0 tr:nth-child("+nthGroup+") td:nth-child("+index+")" ).addClass('highlight');
+	            if(nthGroup==4){
+	            	$( "#table_breaches tr td:nth-child("+index+")" ).addClass('highlight');	
+	            }else{
+	            	$( "#table_0 tr:nth-child("+nthGroup+") td:nth-child("+index+")" ).addClass('highlight');
+	            }	        	
 	        })
                 
        bar.merge(newBar).transition(t)
