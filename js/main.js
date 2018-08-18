@@ -126,6 +126,8 @@ $(document).ready(function() {
 	    var nthKey = $(this).index();
 	    var nthGroup = $(this).parent().index();
 	    $(".contry:nth-child("+nthKey+") rect:nth-child("+nthGroup+")").addClass('highlighted-bar');
+	    var wLP = $(this).offset().left; // Highlight Window Left Position	    	   
+	    highlight4hours(wLP,nthKey);
 	});
 
 	$(document).on('click','#table_breaches td',function() {
@@ -135,6 +137,8 @@ $(document).ready(function() {
 	    var nthKey = $(this).index();
 	    var nthGroup = $(this).parent().index();
 	    $(".contry:nth-child("+nthKey+") rect:nth-child(3)").addClass('highlighted-bar');
+	    var wLP = $(this).offset().left; // Highlight Window Left Position	    	   
+	    highlight4hours(wLP,nthKey);
 	});
 });
 
@@ -253,9 +257,9 @@ $(document).ready(function() {
 	            index +=2;
 
 	    		var nthGroup = $(this).index();
-	    		nthGroup += 2;	
-	    		console.log(nthGroup);
+	    		nthGroup += 2;		    		
 	            $('rect.bar').removeClass('highlighted-bar');
+	            $('.highlight-window').addClass('hide');
 	            $("td").removeClass('highlight');
 	            $(this).addClass('highlighted-bar');
 	            if(nthGroup==4){
@@ -302,4 +306,25 @@ $(document).ready(function() {
 			newdata[label] = tmp;	
     	})    	
     	return newdata;
+    }
+
+    function highlight4hours(left,nthKey){    	
+    	var windowHeight = $('.breach-table-wrapper').outerHeight(true) + $('.bar-chart-wrap').outerHeight(true)+$('.table-wrapper').outerHeight(true) + 40;    	        	
+    	$('.highlight-window').removeClass('hide');
+    	$('.highlight-window').css('top',$('#table_breaches').offset().top);
+    	var wW = 0;
+    	if(nthKey>=4){
+    		wW = td_width *4;
+    	}else{
+    		wW = nthKey  * td_width;
+    	}
+    	$('.highlight-window').css('width',wW);
+    	if(nthKey>=4){
+    		left = left - td_width * 3;
+    	}else{
+    		left = left - td_width * (nthKey - 1);
+    	}
+    	
+    	$('.highlight-window').css('height',windowHeight);
+    	$('.highlight-window').css('left',left);
     }

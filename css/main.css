@@ -73,3 +73,14 @@ rect{
 	opacity: 1;
 	stroke: black;
 }
+
+.highlight-window{
+	background: rgba(255,255,200,.4);
+	position: absolute;
+	border: 2px solid black;
+	pointer-events: none;
+}
+
+.hide{
+	display: none;
+}
