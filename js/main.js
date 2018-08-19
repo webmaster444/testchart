@@ -127,7 +127,8 @@ $(document).ready(function() {
 	    var nthGroup = $(this).parent().index();
 	    $(".contry:nth-child("+nthKey+") rect:nth-child("+nthGroup+")").addClass('highlighted-bar');
 	    var wLP = $(this).offset().left; // Highlight Window Left Position	    	   
-	    highlight4hours(wLP,nthKey);
+	    // highlight4hours(wLP,nthKey);
+	    $('.highlight-window').addClass('hide');
 	});
 
 	$(document).on('click','#table_breaches td',function() {
@@ -138,7 +139,7 @@ $(document).ready(function() {
 	    var nthGroup = $(this).parent().index();
 	    $(".contry:nth-child("+nthKey+") rect:nth-child(3)").addClass('highlighted-bar');
 	    var wLP = $(this).offset().left; // Highlight Window Left Position	    	   
-	    highlight4hours(wLP,nthKey);
+	    highlight4hours(wLP,nthKey);	    
 	});
 });
 
