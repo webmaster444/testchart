@@ -356,24 +356,24 @@ function dataManipulation(data, tblNumber, labels) {
 }
 
 function highlight4hours(left, nthKey) {
-    var windowHeight = $('.breach-table-wrapper').outerHeight(true) + $('.bar-chart-wrap').outerHeight(true) + $('.table-wrapper').outerHeight(true) + 40;
-    $('.highlight-window').removeClass('hide');
-    $('.highlight-window').css('top', $('#table_breaches').offset().top);
-    var wW = 0;
-    if (nthKey >= 4) {
-        wW = td_width * 4 + 4;
-    } else {
-        wW = nthKey * td_width + nthKey;
-    }
-    $('.highlight-window').css('width', wW);
-    if (nthKey >= 4) {
-        left = left - td_width * 3 - 4;
-    } else {
-        left = left - td_width * (nthKey - 1) - nthKey;
-    }
+    // var windowHeight = $('.breach-table-wrapper').outerHeight(true) + $('.bar-chart-wrap').outerHeight(true) + $('.table-wrapper').outerHeight(true) + 40;
+    // $('.highlight-window').removeClass('hide');
+    // $('.highlight-window').css('top', $('#table_breaches').offset().top);
+    // var wW = 0;
+    // if (nthKey >= 4) {
+    //     wW = td_width * 4 + 4;
+    // } else {
+    //     wW = nthKey * td_width + nthKey;
+    // }
+    // $('.highlight-window').css('width', wW);
+    // if (nthKey >= 4) {
+    //     left = left - td_width * 3 - 4;
+    // } else {
+    //     left = left - td_width * (nthKey - 1) - nthKey;
+    // }
 
-    $('.highlight-window').css('height', windowHeight);
-    $('.highlight-window').css('left', left);
+    // $('.highlight-window').css('height', windowHeight);
+    // $('.highlight-window').css('left', left);
 }
 
 function appendNewWrapper(i, cuDate, tblNumber) {
@@ -417,6 +417,19 @@ function drawAchart(cuDate, tblNumber, wrapper) {
 
             new_chartdata.push(tmp);
         })
+
+        var stackedData = [];
+        new_chartdata.forEach(function(d) {
+            var tmp = {};
+            tmp['key'] = Object.keys(d)[0];
+            Object.values(d)[0].forEach(function(g) {
+                var tmp_key = Object.keys(g)[0];
+                if (tmp_key != "Still in")
+                    tmp[tmp_key] = Object.values(g)[0];
+            });
+            stackedData.push(tmp);
+        });
+		console.log(stackedData);
         drawChart(new_chartdata);
     } else if (tblNumber == 1) {
         var new_chartdata = [];
