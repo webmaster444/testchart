@@ -27,7 +27,7 @@ function draw_chart(date, tableNumber) {
 		$("#bar-chart-container").empty();
 	}	
 
-	var newdata = dataManipulation(data[currentDate],labels);
+	var newdata = dataManipulation(data[currentDate],tableNumber,labels);
 	main(newdata);
 }
 
@@ -36,19 +36,17 @@ function draw_table(date,tableNumber) {
 		$(".table-wrapper").html("");
 		return;
 	}
+	
+	if(tableNumber==0){
+		var table = "";
 
-	// var td_width = ($("#bar-chart-container").width() - 120.4) / 24 - 1;
-
-	var table = "";
-
-	var table_breaches = "<table id='table_breaches'><tr>";
-	table_breaches +='<tr><th>Hour</th>';
-	for(let lindex in labels){
-		table_breaches+="<th>"+labels[lindex].substring(0,2)+"</th>";
-	}
-	table_breaches +='</tr>';
-	// for (let i in data[date]) {		
-		// table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
+		var table_breaches = "<table id='table_breaches'><tr>";
+		table_breaches +='<tr><th>Hour</th>';
+		for(let lindex in labels){
+			table_breaches+="<th>"+labels[lindex].substring(0,2)+"</th>";
+		}
+		table_breaches +='</tr>';
+		
 		table += "<table id='table_"+tableNumber+"'><tbody>";
 		var keys = Object.keys(data[date][tableNumber]);
 
@@ -60,16 +58,12 @@ function draw_table(date,tableNumber) {
 				table += "<tr>";			
 				table += "<td style='width: 100px;'>" + keys[j] + "</td>";
 			}			
-
-			// var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
+			
 			var colorScale = d3.scaleLinear().domain([d3.min(data[date][tableNumber][keys[j]]), d3.max(data[date][tableNumber][keys[j]])])
-      .interpolate(d3.interpolateHcl)
-      .range([d3.rgb("#45ad45"), d3.rgb('#d21717')]);
-
-
+		  	.interpolate(d3.interpolateHcl)
+		  	.range([d3.rgb("#45ad45"), d3.rgb('#d21717')]);
 
 			for (let k in data[date][tableNumber][keys[j]]) {				
-
 				var backColor = "";
 				if(keys[j]=="Breaches"){
 					backColor = "color:black;background:" + colorScale(data[date][tableNumber][keys[j]][k]);
@@ -79,15 +73,37 @@ function draw_table(date,tableNumber) {
 					table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
 				}							
 			}
-
 			table += "</tr>";
 		}
+		table += "</tbody></table>";	
 
-		table += "</tbody></table>";
-	// }
+		$(".table-wrapper").append(table);
+		$(".breach-table-wrapper").html(table_breaches);
+	}else{		
+		var table = "";		
+		table += "<table id='table_"+tableNumber+"'><tbody>";		
+		var keys = Object.keys(data[date][tableNumber]);
 
-	$(".table-wrapper").html(table);
-	$(".breach-table-wrapper").html(table_breaches);
+		table +="</tr>";
+		for (let j in keys) {			
+			if(!removeKeys.includes(keys[j])){
+				table += "<tr>";			
+				table += "<td style='width: 100px;'>" + keys[j] + "</td>";
+			}					
+
+			for (let k in data[date][tableNumber][keys[j]]) {				
+				var backColor = "";
+				if(!removeKeys.includes(keys[j])){
+					backColor = "background: white";
+					table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
+				}							
+			}
+			table += "</tr>";
+		}
+		table += "</tbody></table>";	
+
+		$(".table-wrapper").append(table);
+	}	
 }
 
 function getToday() {
@@ -104,9 +120,12 @@ $(document).ready(function() {
 	$("#date-picker").datepicker({
 		onSelect: function(selectedDate) {
 			currentDate = selectedDate;
-			currentTableNumber = 0;			
-			draw_chart(currentDate, currentTableNumber);
-			draw_table(currentDate,currentTableNumber);			
+			currentTableNumber = 0;		
+			// draw_chart(currentDate, currentTableNumber);
+			for(var i=0;i<data[currentDate].length;i++){
+				appendNewWrapper(i,currentDate,currentTableNumber);
+				draw_table(currentDate,i);
+			}
 		},
 		dateFormat: "yy-mm-dd"
 	});
@@ -173,9 +192,9 @@ $(document).ready(function() {
         drawChart(new_chartdata);  
     }
     
-    function setSize(data) {
+    function setSize(data,wrapperElement) {
         // width = 1800;
-        width = $('#bar-chart-container').innerWidth();
+        width = $(wrapperElement).innerWidth();        
         height = 300;
     
         margin = {top:20, left:100, bottom:40, right:0 };
@@ -184,7 +203,7 @@ $(document).ready(function() {
         chartWidth = width - (margin.left+margin.right)
         chartHeight = height - (margin.top+margin.bottom)
 
-	    svg = d3.select("#bar-chart-container").append("svg")
+	    svg = d3.select(wrapperElement).append("svg")
 	    axisLayer = svg.append("g").classed("axisLayer", true)
 	    chartLayer = svg.append("g").classed("chartLayer", true);
 
@@ -295,8 +314,8 @@ $(document).ready(function() {
             .call(xAxis);
         
     }       
-    function dataManipulation(data,labels){
-    	chart_data = data[0];    	
+    function dataManipulation(data,tblNumber,labels){    	
+    	chart_data = data[tblNumber];    	
     	legends = Object.keys(chart_data);
     	var newdata = {};
     	labels.forEach(function(label,i){
@@ -330,4 +349,132 @@ $(document).ready(function() {
     	
     	$('.highlight-window').css('height',windowHeight);
     	$('.highlight-window').css('left',left);
+    }
+
+    function appendNewWrapper(i,cuDate,tblNumber){
+    	var tmp = '<div class="chart-wrapper"><div id="chart_'+i+'"></div></div>';
+    	$('.table-wrapper').append(tmp);
+    	var tmp_id = "#chart_"+i;
+    	drawAchart(cuDate,i,tmp_id);
+    }
+
+    function drawAchart(cuDate,tblNumber,wrapper){      
+		currentDate = cuDate;
+		currentTableNumber = tblNumber;
+
+		if (typeof data[cuDate] == 'undefined') {
+			$("#bar-chart").hide();
+			$(".message").show();
+			return;
+		}
+
+		$("#bar-chart").show();
+		$(".message").hide();
+
+		var datasets = [];
+		var chartData = data[cuDate][tblNumber];
+		var keys = Object.keys(chartData);	
+		
+		if(!$(wrapper).is(':empty')){	
+			$(wrapper).empty();
+		}	
+
+		var newdata = dataManipulation(data[currentDate],tblNumber,labels);		
+    	if(tblNumber==0){
+	        setSize(newdata,wrapper);
+	        drawAxis();                
+
+	        var new_chartdata = [];
+	        labels.forEach(function(label){
+	        	var tmp={};        	
+	        	tmp[label] = newdata[label];
+
+	        	new_chartdata.push(tmp);        
+	        })        	        
+	        drawChart(new_chartdata);	
+    	}else if(tblNumber==1){
+	        var new_chartdata = [];
+	        labels.forEach(function(label){
+	        	var tmp={};        	
+	        	tmp[label] = newdata[label];
+
+	        	new_chartdata.push(tmp);        
+	        })  	       
+
+    		width = $(wrapper).innerWidth();        
+	        height = 300;
+	    
+	        margin = {top:20, left:100, bottom:40, right:0 };	        
+	        
+	        chartWidth = width - (margin.left+margin.right)
+	        chartHeight = height - (margin.top+margin.bottom)
+
+		    svg = d3.select(wrapper).append("svg")
+		    axisLayer = svg.append("g").classed("axisLayer", true)
+		    chartLayer = svg.append("g").classed("chartLayer", true);
+
+	        svg.attr("width", width).attr("height", height)
+	        
+	        axisLayer.attr("width", width).attr("height", height)
+	        
+	        chartLayer
+	            .attr("width", chartWidth)
+	            .attr("height", chartHeight)
+	            .attr("transform", "translate("+[margin.left, margin.top]+")")
+	            
+	        xScale.domain(labels)
+	            .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)	               	        	       
+	                
+	        var a= [];
+	        var yMax = d3.max(chart_data['Arrivals']);
+	        var yMin = d3.max(chart_data['Departures']);
+
+	        yMax += 2;
+	        yMin += 2;
+	        
+	        yScale.domain([-yMin, yMax]).range([chartHeight, 0]);
+
+	        drawAxis();
+
+	        chartLayer.selectAll("rect.negative_bar")
+                .data(new_chartdata).enter()
+                .append("rect")
+                .attr('class', function(d) {
+                    return 'negative_bar';
+                })
+                .attr("width", xScale.bandwidth())
+                .attr('x', function(d) {                	
+                    return xScale(Object.keys(d));
+                })                
+                .attr('y',function(d){return yScale(0)})
+                .transition()
+                .duration(2000)
+                .attr("y", function(d) {                    
+                    return yScale(0)
+                })
+                .attr("height", function(d) {                	
+                    return Math.abs(yScale(0) - yScale(Object.values(d)[0][2]['Departures']));
+                })
+
+            chartLayer.selectAll("rect.positive_bar")
+                .data(new_chartdata).enter()
+                .append("rect")
+                .attr('class', function(d) {
+                    return 'positive_bar';
+                })
+                .attr("width", xScale.bandwidth())
+                .attr('x', function(d) {                	
+                    return xScale(Object.keys(d));
+                })                
+                .attr('y',function(d){return yScale(0)})
+                .transition()
+                .duration(2000)
+                .attr("y", function(d) {                    
+                    return yScale(Object.values(d)[0][1]['Arrivals'])
+                })
+                .attr("height", function(d) {       
+                console.log(d);
+                    return Math.abs(yScale(0) - yScale(Object.values(d)[0][1]['Arrivals']));
+                })
+    	}
     }
