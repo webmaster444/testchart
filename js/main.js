@@ -472,9 +472,126 @@ $(document).ready(function() {
                 .attr("y", function(d) {                    
                     return yScale(Object.values(d)[0][1]['Arrivals'])
                 })
-                .attr("height", function(d) {       
-                console.log(d);
+                .attr("height", function(d) {                       
                     return Math.abs(yScale(0) - yScale(Object.values(d)[0][1]['Arrivals']));
                 })
+    	}else if(tblNumber==2){    		
+	        var new_chartdata = [];
+	        labels.forEach(function(label){
+	        	var tmp={};        	
+	        	tmp[label] = newdata[label];
+
+	        	new_chartdata.push(tmp);        
+	        })  	       
+
+    		width = $(wrapper).innerWidth();        
+	        height = 300;
+	    
+	        margin = {top:20, left:100, bottom:40, right:0 };	        
+	        
+	        chartWidth = width - (margin.left+margin.right)
+	        chartHeight = height - (margin.top+margin.bottom)
+
+		    svg = d3.select(wrapper).append("svg")
+		    axisLayer = svg.append("g").classed("axisLayer", true)
+		    chartLayer = svg.append("g").classed("chartLayer", true);
+
+	        svg.attr("width", width).attr("height", height)
+	        
+	        axisLayer.attr("width", width).attr("height", height)
+	        
+	        chartLayer
+	            .attr("width", chartWidth)
+	            .attr("height", chartHeight)
+	            .attr("transform", "translate("+[margin.left, margin.top]+")")
+	            
+	        xScale.domain(labels)
+	            .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)	               	        	       
+	                	        
+	        var yMax = d3.max(new_chartdata.map(function(d){
+				return Object.values(d)[0].map(function(g){
+					if((Object.keys(g)[0]!="Ambulances")&&(Object.keys(g)[0]!="Still in")){						
+						return Object.values(g)[0];
+					}
+					return 0;
+				}).reduce((a,b)=>a+b,0);				
+			}));
+	        var yMin = d3.min(new_chartdata.map(function(d){
+				return Object.values(d)[0].map(function(g){
+					if((Object.keys(g)[0]!="Ambulances")&&(Object.keys(g)[0]!="Still in")){						
+						return Object.values(g)[0];
+					}
+					return 0;
+				}).reduce((a,b)=>a+b,0);				
+			}));
+
+	        yMax += 2;
+	        yMin -= 2;
+	
+	// console.log(new_chartdata);
+	// new_chartdata.map(function(d){
+	// 	return 
+	// });
+	
+	var stackedData = [];
+new_chartdata.forEach(function(d){
+	var tmp = {};
+	tmp['key'] = Object.keys(d)[0];
+	Object.values(d)[0].forEach(function(g){		
+		var tmp_key = Object.keys(g)[0];
+		if(tmp_key!="Still in")
+			tmp[tmp_key] = Object.values(g)[0];
+	});
+	stackedData.push(tmp);
+})
+
+var stackKeys = ["Majors", "Minors", "Resus"];
+console.log(stackedData);
+    var dataset = d3.stack()(["Majors", "Minors", "Resus"].map(function(fruit) {
+		return stackedData.map(function(d) {		
+    		return {x: d.key, y: +d[fruit]};
+  		});
+	}));
+
+
+	        yScale.domain([0, yMax]).range([chartHeight, 0]);
+
+			var z = d3.scaleOrdinal()
+    			.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    		z.domain(stackKeys);
+	        drawAxis();
+
+			var groups = chartLayer.selectAll("g.cost")
+			  .data(d3.stack().keys(stackKeys)(stackedData))
+			  .enter().append("g")
+			  .attr("class", "cost")
+			  .attr("fill", function(d, i) { console.log(d);return z(d.key); });
+
+			var rect = groups.selectAll("rect")
+			  .data(function(d) { return d; })
+			  .enter()
+			  .append("rect")
+			  .attr("x", function(d) { return xScale(d['data']['key']); })
+			  .attr("y", function(d) { console.log(d);return yScale(d[1]); })
+			  .attr("height", function(d) { return yScale(d[0]) - yScale(d[1]); })
+			  .attr("width", xScale.bandwidth())
+
+			var yMax1 = d3.max(stackedData.map(function(d){return d['Ambulances']}));
+			yMax1 +=2;			
+			var yScale1 = d3.scaleLinear();
+			yScale1.domain([0, yMax1]).range([chartHeight, 0]);
+
+			var line = d3.line()
+			    .x(function(d) { return xScale(d.key) + xScale.bandwidth()/2; })
+			    .y(function(d) { return yScale1(d['Ambulances']); });
+	      	chartLayer.append("path")
+			      .datum(stackedData)
+			      .attr("fill", "none")
+			      .attr("stroke", "steelblue")
+			      .attr("stroke-linejoin", "round")
+			      .attr("stroke-linecap", "round")
+			      .attr("stroke-width", 1.5)
+			      .attr("d", line);
     	}
     }
