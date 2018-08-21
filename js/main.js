@@ -339,8 +339,7 @@ function dataManipulation(data, tblNumber, labels) {
     legends = Object.keys(chart_data).filter(function(d){
     	if(removeKeys.includes(d)) return false;
     	return true;
-    });
-    console.log(legends);
+    });    
     var newdata = {};
     labels.forEach(function(label, i) {
         var tmp = [];
@@ -707,14 +706,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
                 return 0;
             }).reduce((a, b) => a + b, 0);
         }));
-        //       var yMin = d3.min(new_chartdata.map(function(d){
-        // 	return Object.values(d)[0].map(function(g){
-        // 		if((Object.keys(g)[0]!="Total")&&(Object.keys(g)[0]!="Still in")){						
-        // 			return Object.values(g)[0];
-        // 		}
-        // 		return 0;
-        // 	}).reduce((a,b)=>a+b,0);				
-        // }));
 
         yMax += 2;
         yMin -= 2;
@@ -732,13 +723,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
         });
 
         var stackKeys = ["< 60", "60 - 120", "120 - 180", "180 - 240", "> 240"];
-
-        //    var dataset = d3.stack()(["Majors", "Minors", "Resus"].map(function(fruit) {
-        // 	return stackedData.map(function(d) {		
-        //    		return {x: d.key, y: +d[fruit]};
-        //  		});
-        // }));
-
 
         yScale.domain([0, yMax]).range([chartHeight, 0]);
 
