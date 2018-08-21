@@ -31,7 +31,7 @@ function draw_chart(date, tableNumber) {
 	main(newdata);
 }
 
-function draw_table(date) {
+function draw_table(date,tableNumber) {
 	if (typeof data[date] == 'undefined') {
 		$(".table-wrapper").html("");
 		return;
@@ -44,13 +44,13 @@ function draw_table(date) {
 	var table_breaches = "<table id='table_breaches'><tr>";
 	table_breaches +='<tr><th>Hour</th>';
 	for(let lindex in labels){
-		table_breaches+="<th>"+labels[lindex]+"</th>";
+		table_breaches+="<th>"+labels[lindex].substring(0,2)+"</th>";
 	}
 	table_breaches +='</tr>';
-	for (let i in data[date]) {		
+	// for (let i in data[date]) {		
 		// table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
-		table += "<table id='table_"+i+"'><tbody>";
-		var keys = Object.keys(data[date][i]);
+		table += "<table id='table_"+tableNumber+"'><tbody>";
+		var keys = Object.keys(data[date][tableNumber]);
 
 		table +="</tr>";
 		for (let j in keys) {			
@@ -62,21 +62,21 @@ function draw_table(date) {
 			}			
 
 			// var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])]);
-			var colorScale = d3.scaleLinear().domain([d3.min(data[date][i][keys[j]]), d3.max(data[date][i][keys[j]])])
+			var colorScale = d3.scaleLinear().domain([d3.min(data[date][tableNumber][keys[j]]), d3.max(data[date][tableNumber][keys[j]])])
       .interpolate(d3.interpolateHcl)
       .range([d3.rgb("#45ad45"), d3.rgb('#d21717')]);
 
 
 
-			for (let k in data[date][i][keys[j]]) {				
+			for (let k in data[date][tableNumber][keys[j]]) {				
 
 				var backColor = "";
 				if(keys[j]=="Breaches"){
-					backColor = "color:black;background:" + colorScale(data[date][i][keys[j]][k]);
-					table_breaches += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
+					backColor = "color:black;background:" + colorScale(data[date][tableNumber][keys[j]][k]);
+					table_breaches += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
 				}else if(!removeKeys.includes(keys[j])){
 					backColor = "background: white";
-					table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
+					table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
 				}							
 			}
 
@@ -84,7 +84,7 @@ function draw_table(date) {
 		}
 
 		table += "</tbody></table>";
-	}
+	// }
 
 	$(".table-wrapper").html(table);
 	$(".breach-table-wrapper").html(table_breaches);
@@ -104,9 +104,9 @@ $(document).ready(function() {
 	$("#date-picker").datepicker({
 		onSelect: function(selectedDate) {
 			currentDate = selectedDate;
-			currentTableNumber = 0;
+			currentTableNumber = 0;			
 			draw_chart(currentDate, currentTableNumber);
-			draw_table(currentDate);
+			draw_table(currentDate,currentTableNumber);			
 		},
 		dateFormat: "yy-mm-dd"
 	});
@@ -317,15 +317,15 @@ $(document).ready(function() {
     	$('.highlight-window').css('top',$('#table_breaches').offset().top);
     	var wW = 0;
     	if(nthKey>=4){
-    		wW = td_width *4;
+    		wW = td_width *4 + 4;
     	}else{
-    		wW = nthKey  * td_width;
+    		wW = nthKey  * td_width + nthKey;
     	}
     	$('.highlight-window').css('width',wW);
     	if(nthKey>=4){
-    		left = left - td_width * 3;
+    		left = left - td_width * 3 -4;
     	}else{
-    		left = left - td_width * (nthKey - 1);
+    		left = left - td_width * (nthKey - 1) - nthKey;
     	}
     	
     	$('.highlight-window').css('height',windowHeight);

@@ -40,7 +40,11 @@ td ,th{
 }
 
 td:first-child {
-	padding-left: 10px;
+	padding-left: 10px;	
+}
+
+.breach-table-wrapper th:first-child, .breach-table-wrapper td:first-child, .table-wrapper td:first-child{
+	background: #ccc;
 }
 
 td:last-child {
