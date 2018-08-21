@@ -3,13 +3,21 @@
 }
 
 .bar-chart-wrap {
-	margin: 20px 60px 0 40px;
+	/*margin-top: 20px;
+	margin-left: 10px;*/
+    margin: 130px 60px 0 40px;
 }
 
 .date-wrapper {
-	margin: 100px 60px 0 120px;
+	/*position: fixed;*/
+	/*top: 10px;*/
+	/*left: 10px;	*/
+	margin-top: 10px;
+	margin-left: 10px;
 }
-
+html, body{
+	margin: 0;
+}
 table {
 	margin-top: 40px;
 	margin-left: 40px;
@@ -83,4 +91,19 @@ rect{
 
 .hide{
 	display: none;
+}
+
+.breach-table-wrapper table{
+	margin-top: 10px;
+}
+.breach-table-wrapper{
+	margin-bottom: 30px;
+}
+
+header{
+	background: white;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0px;
 }

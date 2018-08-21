@@ -4,6 +4,7 @@ var currentTableNumber = null;
 var labels =  ["01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
 var legends;
 var td_width;
+var removeKeys = ['Total','Still in'];
 function draw_chart(date, tableNumber) {
 	$('td').removeClass('highlight');
 	currentDate = date;
@@ -41,20 +42,21 @@ function draw_table(date) {
 	var table = "";
 
 	var table_breaches = "<table id='table_breaches'><tr>";
+	table_breaches +='<tr><th>Hour</th>';
+	for(let lindex in labels){
+		table_breaches+="<th>"+labels[lindex]+"</th>";
+	}
+	table_breaches +='</tr>';
 	for (let i in data[date]) {		
 		// table += "<table onClick=\"draw_chart('" + date + "', " + i + ")\"><tbody>";
 		table += "<table id='table_"+i+"'><tbody>";
 		var keys = Object.keys(data[date][i]);
 
-		table +='<tr><th></th>';
-		for(let lindex in labels){
-			table+="<th>"+labels[lindex]+"</th>";
-		}
 		table +="</tr>";
 		for (let j in keys) {			
 			if(keys[j]=="Breaches"){
 				table_breaches += "<td style='width: 100px;'>" + keys[j] + "</td>";
-			}else{
+			}else if(!removeKeys.includes(keys[j])){
 				table += "<tr>";			
 				table += "<td style='width: 100px;'>" + keys[j] + "</td>";
 			}			
@@ -72,7 +74,7 @@ function draw_table(date) {
 				if(keys[j]=="Breaches"){
 					backColor = "color:black;background:" + colorScale(data[date][i][keys[j]][k]);
 					table_breaches += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
-				}else{
+				}else if(!removeKeys.includes(keys[j])){
 					backColor = "background: white";
 					table += "<td style='"+backColor+";text-align: center; width: " + td_width + "px;'>" + data[date][i][keys[j]][k] + "</td>";
 				}							
@@ -174,7 +176,7 @@ $(document).ready(function() {
     function setSize(data) {
         // width = 1800;
         width = $('#bar-chart-container').innerWidth();
-        height = 500;
+        height = 300;
     
         margin = {top:20, left:100, bottom:40, right:0 };
         
