@@ -356,24 +356,24 @@ function dataManipulation(data, tblNumber, labels) {
 }
 
 function highlight4hours(left, nthKey) {
-    // var windowHeight = $('.breach-table-wrapper').outerHeight(true) + $('.bar-chart-wrap').outerHeight(true) + $('.table-wrapper').outerHeight(true) + 40;
-    // $('.highlight-window').removeClass('hide');
-    // $('.highlight-window').css('top', $('#table_breaches').offset().top);
-    // var wW = 0;
-    // if (nthKey >= 4) {
-    //     wW = td_width * 4 + 4;
-    // } else {
-    //     wW = nthKey * td_width + nthKey;
-    // }
-    // $('.highlight-window').css('width', wW);
-    // if (nthKey >= 4) {
-    //     left = left - td_width * 3 - 4;
-    // } else {
-    //     left = left - td_width * (nthKey - 1) - nthKey;
-    // }
+    var windowHeight = $('.breach-table-wrapper').outerHeight(true) + $('.bar-chart-wrap').outerHeight(true) + $('.table-wrapper').outerHeight(true) + 40;
+    $('.highlight-window').removeClass('hide');
+    $('.highlight-window').css('top', $('#table_breaches').offset().top);
+    var wW = 0;
+    if (nthKey >= 4) {
+        wW = td_width * 4 + 4;
+    } else {
+        wW = nthKey * td_width + nthKey;
+    }
+    $('.highlight-window').css('width', wW);
+    if (nthKey >= 4) {
+        left = left - td_width * 3 - 4;
+    } else {
+        left = left - td_width * (nthKey - 1) - nthKey;
+    }
 
-    // $('.highlight-window').css('height', windowHeight);
-    // $('.highlight-window').css('left', left);
+    $('.highlight-window').css('height', windowHeight);
+    $('.highlight-window').css('left', left);
 }
 
 function appendNewWrapper(i, cuDate, tblNumber) {
