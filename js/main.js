@@ -735,7 +735,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             stackedData.push(tmp);
         });
 
-        var stackKeys = ["< 60", "60 - 120", "120 - 180", "180 - 240", "> 240"];
+        var stackKeys = ["< 60", "60 - 120", "120 - 180", "180 - 240"];
 
         yScale.domain([0, yMax]).range([chartHeight, 0]);
 
