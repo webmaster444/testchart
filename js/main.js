@@ -5,7 +5,6 @@ var labels = ["01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08
 var legends;
 var td_width;
 var removeKeys = ['Total', 'Still in','> 240'];
-var f=[230,350,450];
 
 function draw_chart(date, tableNumber) {
     $('td').removeClass('highlight');
@@ -33,7 +32,7 @@ function draw_chart(date, tableNumber) {
     main(newdata);
 }
 
-function draw_table(date, tableNumber) {
+function draw_table(date, tableNumber) {    
     if (typeof data[date] == 'undefined') {
         $(".table-wrapper").html("");
         return;
@@ -124,6 +123,7 @@ $(document).ready(function() {
             currentDate = selectedDate;
             currentTableNumber = 0;
             // draw_chart(currentDate, currentTableNumber);
+            setCommonSize(labels);
             for (var i = 0; i < data[currentDate].length; i++) {
                 appendNewWrapper(i, currentDate, currentTableNumber);
                 draw_table(currentDate, i);
@@ -138,8 +138,8 @@ $(document).ready(function() {
     draw_table(currentDate);
 
     $(window).resize(function() {
-        draw_chart(currentDate, currentTableNumber);
-        draw_table(currentDate);
+        // draw_chart(currentDate, currentTableNumber);
+        // draw_table(currentDate);
     });
 
     $(document).on('click', '#table_0 td', function() {
@@ -166,9 +166,14 @@ $(document).ready(function() {
     });
 });
 
-var width, height
+var width, height = 300;
 var chartWidth, chartHeight
-var margin
+var margin = {
+        top: 20,
+        left: 100,
+        bottom: 40,
+        right: 0
+    };
 var svg, axisLayer, chartLayer;
 var chart_data;
 
@@ -194,22 +199,14 @@ function main(data) {
     drawChart(new_chartdata);
 }
 
-function setSize(data, wrapperElement) {
-    // width = 1800;
-    width = $(wrapperElement).innerWidth();
-    height = 300;
-
-    margin = {
-        top: 20,
-        left: 100,
-        bottom: 40,
-        right: 0
-    };
-
-
-    chartWidth = width - (margin.left + margin.right)
-    chartHeight = height - (margin.top + margin.bottom)
-
+function setCommonSize(labels){
+    width = $('.bar-chart-wrap').innerWidth();    
+    chartWidth = width - (margin.left + margin.right);
+    chartHeight = height - (margin.top + margin.bottom);
+    xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);
+    td_width = xScale.step();    
+}
+function setSize(data, wrapperElement) {    
     svg = d3.select(wrapperElement).append("svg")
     axisLayer = svg.append("g").classed("axisLayer", true)
     chartLayer = svg.append("g").classed("chartLayer", true);
@@ -221,12 +218,7 @@ function setSize(data, wrapperElement) {
     chartLayer
         .attr("width", chartWidth)
         .attr("height", chartHeight)
-        .attr("transform", "translate(" + [margin.left, margin.top] + ")")
-
-    xScale.domain(labels)
-        .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
-
-    td_width = xScale.step();
+        .attr("transform", "translate(" + [margin.left, margin.top] + ")")    
 
     xInScale.domain(legends).range([0, xScale.bandwidth()])
 
@@ -430,20 +422,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             });
             stackedData.push(tmp);
         });		
-        console.log(stackedData);
-        // drawChart(new_chartdata);
-        width = $(wrapper).innerWidth();
-        height = 300;
-
-        margin = {
-            top: 20,
-            left: 100,
-            bottom: 40,
-            right: 0
-        };
-
-        chartWidth = width - (margin.left + margin.right)
-        chartHeight = height - (margin.top + margin.bottom)
 
         svg = d3.select(wrapper).append("svg")
         axisLayer = svg.append("g").classed("axisLayer", true)
@@ -490,15 +468,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
            .attr("class", "area")
            .attr("d", area)
            .attr('fill','red')
-           // .transition()
-           //  .duration(3000)
-           //  .attrTween('d',function(){
-           //      var interpolator = d3.interpolate([0,0,0],f)
-           //      return function(t){
-           //          console.log(area(interpolator(t)));
-           //          return area(interpolator(t))
-           //      }
-           //  });
+           .call(transition);
 
         chartLayer.selectAll("rect")
             .data(stackedData).enter()
@@ -537,19 +507,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             new_chartdata.push(tmp);
         })
 
-        width = $(wrapper).innerWidth();
-        height = 300;
-
-        margin = {
-            top: 20,
-            left: 100,
-            bottom: 40,
-            right: 0
-        };
-
-        chartWidth = width - (margin.left + margin.right)
-        chartHeight = height - (margin.top + margin.bottom)
-
         svg = d3.select(wrapper).append("svg")
         axisLayer = svg.append("g").classed("axisLayer", true)
         chartLayer = svg.append("g").classed("chartLayer", true);
@@ -565,8 +522,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
 
         xScale.domain(labels)
             .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
-
-        var a = [];
+        
         var yMax = d3.max(chart_data['Arrivals']);
         var yMin = d3.max(chart_data['Departures']);
 
@@ -630,19 +586,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             new_chartdata.push(tmp);
         })
 
-        width = $(wrapper).innerWidth();
-        height = 300;
-
-        margin = {
-            top: 20,
-            left: 100,
-            bottom: 40,
-            right: 0
-        };
-
-        chartWidth = width - (margin.left + margin.right)
-        chartHeight = height - (margin.top + margin.bottom)
-
         svg = d3.select(wrapper).append("svg")
         axisLayer = svg.append("g").classed("axisLayer", true)
         chartLayer = svg.append("g").classed("chartLayer", true);
@@ -701,7 +644,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
                 };
             });
         }));
-
 
         yScale.domain([0, yMax]).range([chartHeight, 0]);
 
@@ -779,20 +721,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
 
             new_chartdata.push(tmp);
         })
-
-        width = $(wrapper).innerWidth();
-        height = 300;
-
-        margin = {
-            top: 20,
-            left: 100,
-            bottom: 40,
-            right: 0
-        };
-
-        chartWidth = width - (margin.left + margin.right)
-        chartHeight = height - (margin.top + margin.bottom)
-
+        
         svg = d3.select(wrapper).append("svg")
         axisLayer = svg.append("g").classed("axisLayer", true)
         chartLayer = svg.append("g").classed("chartLayer", true);
@@ -871,13 +800,13 @@ function drawAchart(cuDate, tblNumber, wrapper) {
 }
 
 function transition(path) {
-            path.transition()
-                .duration(2000)
-                .attrTween("stroke-dasharray", tweenDash);
-        }
+    path.transition()
+        .duration(2000)
+        .attrTween("stroke-dasharray", tweenDash);
+}
 
-        function tweenDash() {
-            var l = this.getTotalLength(),
-                i = d3.interpolateString("0," + l, l + "," + l);
-            return function (t) { return i(t); };
-        }
+function tweenDash() {
+    var l = this.getTotalLength(),
+        i = d3.interpolateString("0," + l, l + "," + l);
+    return function (t) { return i(t); };
+}
