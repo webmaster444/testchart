@@ -21,6 +21,10 @@
 html, body{
 	margin: 0;
 }
+
+.area{
+	fill: lightblue;
+}
 table {
 	margin-top: 40px;
 	margin-left: 40px;

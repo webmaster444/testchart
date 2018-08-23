@@ -5,6 +5,7 @@ var labels = ["01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08
 var legends;
 var td_width;
 var removeKeys = ['Total', 'Still in','> 240'];
+var f=[230,350,450];
 
 function draw_chart(date, tableNumber) {
     $('td').removeClass('highlight');
@@ -407,8 +408,8 @@ function drawAchart(cuDate, tblNumber, wrapper) {
     var newdata = dataManipulation(data[currentDate], tblNumber, labels);
     if (tblNumber == 0) {
         //first chart	
-        setSize(newdata, wrapper);
-        drawAxis();
+        // setSize(newdata, wrapper);
+        // drawAxis();
 
         var new_chartdata = [];
         labels.forEach(function(label) {
@@ -428,9 +429,105 @@ function drawAchart(cuDate, tblNumber, wrapper) {
                     tmp[tmp_key] = Object.values(g)[0];
             });
             stackedData.push(tmp);
-        });
-		console.log(stackedData);
-        drawChart(new_chartdata);
+        });		
+        console.log(stackedData);
+        // drawChart(new_chartdata);
+        width = $(wrapper).innerWidth();
+        height = 300;
+
+        margin = {
+            top: 20,
+            left: 100,
+            bottom: 40,
+            right: 0
+        };
+
+        chartWidth = width - (margin.left + margin.right)
+        chartHeight = height - (margin.top + margin.bottom)
+
+        svg = d3.select(wrapper).append("svg")
+        axisLayer = svg.append("g").classed("axisLayer", true)
+        chartLayer = svg.append("g").classed("chartLayer", true);
+
+        svg.attr("width", width).attr("height", height)
+
+        axisLayer.attr("width", width).attr("height", height)
+
+        chartLayer
+            .attr("width", chartWidth)
+            .attr("height", chartHeight)
+            .attr("transform", "translate(" + [margin.left, margin.top] + ")")
+
+        xScale.domain(labels)
+            .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
+
+        var area = d3.area()
+            .curve(d3.curveCardinal)
+            .x(function(d) { return xScale(d.key) + xScale.bandwidth()/2; })
+            .y0(chartHeight)
+            .y1(function(d) { return yScale(d['Forecast']); });
+
+        var yScale1 = d3.scaleLinear();
+        yScale1.domain([0, d3.max(stackedData.map(function(d){return d['Breaches'];}))]).range([chartHeight, 0]);
+
+        var yScale2 = d3.scaleLinear();
+        yScale2.domain([0,d3.max(stackedData.map(function(d){return d['Attendances'];}))]).range([chartHeight, 0]);
+
+        yScale.domain([0,d3.max(stackedData.map(function(d){return d['Forecast'];}))]).range([chartHeight, 0]);
+
+        var line = d3.line()
+            .x(function(d) {
+                return xScale(d.key) + xScale.bandwidth() / 2;
+            })
+            .y(function(d) {
+                return yScale1(d['Breaches']);
+            }).curve(d3.curveCardinal);
+
+        drawAxis();
+        
+        chartLayer.append("path")
+           .data([stackedData])
+           .attr("class", "area")
+           .attr("d", area)
+           .attr('fill','red')
+           // .transition()
+           //  .duration(3000)
+           //  .attrTween('d',function(){
+           //      var interpolator = d3.interpolate([0,0,0],f)
+           //      return function(t){
+           //          console.log(area(interpolator(t)));
+           //          return area(interpolator(t))
+           //      }
+           //  });
+
+        chartLayer.selectAll("rect")
+            .data(stackedData).enter()
+            .append("rect")
+            .attr("width", xScale.bandwidth())
+            .attr('x', function(d) {
+                return xScale(d.key);
+            })
+            .attr('y', function(d) {
+                return yScale2(0)
+            })
+            .transition()
+            .duration(2000)
+            .attr("y", function(d) {
+                return yScale2(d['Attendances']);
+            })
+            .attr("height", function(d) {
+                return Math.abs(yScale2(0) - yScale2(d['Attendances']));
+            })           
+        
+        chartLayer.append("path")
+            .datum(stackedData)                    
+            .attr("fill", "none")
+            .attr("stroke", "red")
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("stroke-width", 1.5)
+            .attr("d", line)
+            .call(transition);
     } else if (tblNumber == 1) {
         var new_chartdata = [];
         labels.forEach(function(label) {
@@ -523,6 +620,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .attr("height", function(d) {
                 return Math.abs(yScale(0) - yScale(Object.values(d)[0][1]['Arrivals']));
             })
+
     } else if (tblNumber == 2) {
         var new_chartdata = [];
         labels.forEach(function(label) {
@@ -769,6 +867,17 @@ function drawAchart(cuDate, tblNumber, wrapper) {
                 return yScale(d[0]) - yScale(d[1]);
             })
             .attr("width", xScale.bandwidth())
-
     }
 }
+
+function transition(path) {
+            path.transition()
+                .duration(2000)
+                .attrTween("stroke-dasharray", tweenDash);
+        }
+
+        function tweenDash() {
+            var l = this.getTotalLength(),
+                i = d3.interpolateString("0," + l, l + "," + l);
+            return function (t) { return i(t); };
+        }
