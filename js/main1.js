@@ -42,10 +42,10 @@ function draw_table(date, tableNumber) {
     if (tableNumber == 0) {
         var table = "";
 
-        var table_breaches = "<table id='table_breaches'><tr>";
-        table_breaches += '<tr><th>Hour</th>';
+        var table_breaches = "<table id='table_breaches'>";
+        table_breaches += '<tr><th width='+(100+offset)+'px >Hour</th>';
         for (let lindex in labels) {
-            table_breaches += "<th>" + labels[lindex].substring(0, 2) + "</th>";
+            table_breaches += "<th width="+td_width+">" + labels[lindex].substring(0, 2) + "</th>";
         }
         table_breaches += '</tr>';
 
@@ -55,11 +55,11 @@ function draw_table(date, tableNumber) {
         table += "</tr>";
         for (let j in keys) {
             if (keys[j] == "Breaches") {
-                table_breaches += "<td style='width: 100px;'>" + keys[j] + "</td>";
+                table_breaches += "<td style='width: "+(100 + offset)+"px;'>" + keys[j] + "</td>";
                 // table_breaches += "<td style='width: "+(100 - offset)+"px;'>" + keys[j] + "</td>";
             } else if (!removeKeys.includes(keys[j])) {
                 table += "<tr>";
-                table += "<td style='width: 100px;'>" + keys[j] + "</td>";
+                table += "<td style='width: "+(100 + offset)+";'>" + keys[j] + "</td>";
                 // table += "<td style='width: "+(100 - offset)+"px;'>" + keys[j] + "</td>";
             }
 
@@ -69,18 +69,18 @@ function draw_table(date, tableNumber) {
 
             for (let k in data[date][tableNumber][keys[j]]) {
                 var new_td_width;
-                if(k==0){
-                    new_td_width = td_width - offset;
-                }else{
-                    new_td_width = td_width;
-                }
+                // if(k==0){
+                //     new_td_width = td_width - offset;
+                // }else{
+                //     new_td_width = td_width;
+                // }
                 var backColor = "";
                 if (keys[j] == "Breaches") {
                     backColor = "color:black;background:" + colorScale(data[date][tableNumber][keys[j]][k]);
-                    table_breaches += "<td style='" + backColor + ";text-align: center; width: " + new_td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
+                    table_breaches += "<td style='" + backColor + ";text-align: center; width: " + td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
                 } else if (!removeKeys.includes(keys[j])) {
                     backColor = "background: white";
-                    table += "<td style='" + backColor + ";text-align: center; width: " + new_td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
+                    table += "<td style='" + backColor + ";text-align: center; width: " + td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
                 }
             }
             table += "</tr>";
@@ -105,16 +105,16 @@ function draw_table(date, tableNumber) {
 
             for (let k in data[date][tableNumber][keys[j]]) {
                 var new_td_width;
-                if(k==0){
-                    new_td_width = td_width - offset;
-                }else{
-                    new_td_width = td_width;
-                }
+                // if(k==0){
+                //     new_td_width = td_width - offset;
+                // }else{
+                //     new_td_width = td_width;
+                // }
 
                 var backColor = "";
                 if (!removeKeys.includes(keys[j])) {
                     backColor = "background: white";
-                    table += "<td style='" + backColor + ";text-align: center; width: " + new_td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
+                    table += "<td style='" + backColor + ";text-align: center; width: " + td_width + "px;'>" + data[date][tableNumber][keys[j]][k] + "</td>";
                 }
             }
             table += "</tr>";
@@ -145,15 +145,19 @@ $(document).ready(function() {
             for (var i = 0; i < data[currentDate].length; i++) {
                 appendNewWrapper(i, currentDate, currentTableNumber);
                 draw_table(currentDate, i);
+                console.log(i);
             }
+            console.log('tableResize');
+            var tableWidth = td_width * 24 + 100;
+            $('table').css('width',tableWidth);
         },
         dateFormat: "yy-mm-dd"
     });
 
     $("#date-picker").datepicker().datepicker("setDate", "today");
 
-    // draw_chart(currentDate, currentTableNumber);
-    // draw_table(currentDate);
+    draw_chart(currentDate, currentTableNumber);
+    draw_table(currentDate);
 
     $(window).resize(function() {
         // draw_chart(currentDate, currentTableNumber);
@@ -223,9 +227,10 @@ function setCommonSize(labels){
     chartWidth = width - (margin.left + margin.right);
     chartHeight = height - (margin.top + margin.bottom);
     // xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);    
-    xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1);        
+    xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);        
     offset = (xScale.step() - xScale.bandwidth()) / 2;
     console.log(offset);
+    console.log(xScale.paddingInner() * xScale.step());
     td_width = xScale.step();         
 }
 function setSize(data, wrapperElement) {    
@@ -377,20 +382,20 @@ function highlight4hours(left, nthKey) {
     $('.highlight-window').css('top', "40px");
     var wW = 0;
     if (nthKey > 4) {
-        wW = td_width * 4 + offset;
+        wW = td_width * 4;
     } else if(nthKey !=1){
-        wW = nthKey * td_width - offset;
+        wW = nthKey * td_width;
     }else if(nthKey == 1){
         wW = nthKey * td_width;
     }
     $('.highlight-window').css('width', wW);
     if (nthKey > 4) {
-        left = left - td_width * 3 - offset;
+        left = left - td_width * 3;
     } else if(nthKey !=1){
 
-        left = left - td_width * (nthKey - 1)  + offset;
+        left = left - td_width * (nthKey - 1);
     }else if(nthKey==1){
-        left = left - td_width*(nthKey- 1) - offset;
+        left = left - td_width*(nthKey- 1);
     }
 
     $('.highlight-window').css('height', windowHeight);
@@ -838,3 +843,11 @@ function tweenDash() {
         i = d3.interpolateString("0," + l, l + "," + l);
     return function (t) { return i(t); };
 }
+
+// when scroll
+$(window).on('scroll', function(e) {
+    //calculate left position
+    var left = $(this).scrollLeft();
+    //apply to header in negative
+    $('header').css('left', -left);
+});

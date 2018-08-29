@@ -1,3 +1,4 @@
+
 * {
 	box-sizing: border-box;
 }
@@ -130,4 +131,8 @@ tr th:first-child{
 
 .negative_bar{
 	fill: red;
+}
+
+table{
+	table-layout: fixed;
 }
