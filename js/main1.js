@@ -4,7 +4,7 @@ var currentTableNumber = null;
 var labels = ["01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
 var legends;
 var td_width;
-var removeKeys = ['Total', 'Still in','> 240'];
+var removeKeys = ['Total', 'Still in', '> 240'];
 var offset;
 
 function draw_chart(date, tableNumber) {
@@ -33,7 +33,7 @@ function draw_chart(date, tableNumber) {
     main(newdata);
 }
 
-function draw_table(date, tableNumber) {    
+function draw_table(date, tableNumber) {
     if (typeof data[date] == 'undefined') {
         $(".table-wrapper").html("");
         return;
@@ -43,9 +43,9 @@ function draw_table(date, tableNumber) {
         var table = "";
 
         var table_breaches = "<table id='table_breaches'>";
-        table_breaches += '<tr><th width='+(100+offset)+'px >Hour</th>';
+        table_breaches += '<tr><th width=' + (100 + offset) + 'px >Hour</th>';
         for (let lindex in labels) {
-            table_breaches += "<th width="+td_width+">" + labels[lindex].substring(0, 2) + "</th>";
+            table_breaches += "<th width=" + td_width + ">" + labels[lindex].substring(0, 2) + "</th>";
         }
         table_breaches += '</tr>';
 
@@ -55,12 +55,10 @@ function draw_table(date, tableNumber) {
         table += "</tr>";
         for (let j in keys) {
             if (keys[j] == "Breaches") {
-                table_breaches += "<td style='width: "+(100 + offset)+"px;'>" + keys[j] + "</td>";
-                // table_breaches += "<td style='width: "+(100 - offset)+"px;'>" + keys[j] + "</td>";
+                table_breaches += "<td style='width: " + (100 + offset) + "px;'>" + keys[j] + "</td>";                
             } else if (!removeKeys.includes(keys[j])) {
                 table += "<tr>";
-                table += "<td style='width: "+(100 + offset)+";'>" + keys[j] + "</td>";
-                // table += "<td style='width: "+(100 - offset)+"px;'>" + keys[j] + "</td>";
+                table += "<td style='width: " + (100 + offset) + "px;'>" + keys[j] + "</td>";                
             }
 
             var colorScale = d3.scaleLinear().domain([d3.min(data[date][tableNumber][keys[j]]), d3.max(data[date][tableNumber][keys[j]])])
@@ -68,12 +66,6 @@ function draw_table(date, tableNumber) {
                 .range([d3.rgb("#45ad45"), d3.rgb('#d21717')]);
 
             for (let k in data[date][tableNumber][keys[j]]) {
-                var new_td_width;
-                // if(k==0){
-                //     new_td_width = td_width - offset;
-                // }else{
-                //     new_td_width = td_width;
-                // }
                 var backColor = "";
                 if (keys[j] == "Breaches") {
                     backColor = "color:black;background:" + colorScale(data[date][tableNumber][keys[j]][k]);
@@ -97,20 +89,11 @@ function draw_table(date, tableNumber) {
         table += "</tr>";
         for (let j in keys) {
             if (!removeKeys.includes(keys[j])) {
-                table += "<tr>";
-                // table += "<td style='width: "+(100-offset)+"px;'>" + keys[j] + "</td>";
-                table += "<td style='width: 100px;'>" + keys[j] + "</td>";
-
+                table += "<tr>";                
+                table += "<td style='width: " + (100 + offset) + "px;'>" + keys[j] + "</td>";
             }
 
-            for (let k in data[date][tableNumber][keys[j]]) {
-                var new_td_width;
-                // if(k==0){
-                //     new_td_width = td_width - offset;
-                // }else{
-                //     new_td_width = td_width;
-                // }
-
+            for (let k in data[date][tableNumber][keys[j]]) {                
                 var backColor = "";
                 if (!removeKeys.includes(keys[j])) {
                     backColor = "background: white";
@@ -139,8 +122,7 @@ $(document).ready(function() {
     $("#date-picker").datepicker({
         onSelect: function(selectedDate) {
             currentDate = selectedDate;
-            currentTableNumber = 0;
-            // draw_chart(currentDate, currentTableNumber);
+            currentTableNumber = 0;            
             setCommonSize(labels);
             for (var i = 0; i < data[currentDate].length; i++) {
                 appendNewWrapper(i, currentDate, currentTableNumber);
@@ -149,7 +131,7 @@ $(document).ready(function() {
             }
             console.log('tableResize');
             var tableWidth = td_width * 24 + 100;
-            $('table').css('width',tableWidth);
+            $('table').css('width', tableWidth);
         },
         dateFormat: "yy-mm-dd"
     });
@@ -171,8 +153,8 @@ $(document).ready(function() {
         var nthKey = $(this).index();
         var nthGroup = $(this).parent().index();
         $(".contry:nth-child(" + nthKey + ") rect:nth-child(" + nthGroup + ")").addClass('highlighted-bar');
-        var wLP = $(this).offset().left; // Highlight Window Left Position	    	   
-        // highlight4hours(wLP,nthKey);
+        var wLP = $(this).offset().left; // Get 4 hours window Left Position             
+        
         $('.highlight-window').addClass('hide');
     });
 
@@ -183,7 +165,7 @@ $(document).ready(function() {
         var nthKey = $(this).index();
         var nthGroup = $(this).parent().index();
         $(".contry:nth-child(" + nthKey + ") rect:nth-child(3)").addClass('highlighted-bar');
-        var wLP = $(this).offset().left; // Highlight Window Left Position	    	   
+        var wLP = $(this).offset().left; // Get 4 hours window Left Position           
         highlight4hours(wLP, nthKey);
     });
 });
@@ -191,11 +173,11 @@ $(document).ready(function() {
 var width, height = 300;
 var chartWidth, chartHeight
 var margin = {
-        top: 20,
-        left: 100,
-        bottom: 40,
-        right: 0
-    };
+    top: 20,
+    left: 100,
+    bottom: 40,
+    right: 0
+};
 var svg, axisLayer, chartLayer;
 var chart_data;
 
@@ -221,19 +203,25 @@ function main(data) {
     drawChart(new_chartdata);
 }
 
-function setCommonSize(labels){
-    width = $('.bar-chart-wrap').innerWidth();    
+function setCommonSize(labels) {
+    width = $('.bar-chart-wrap').innerWidth();
     
     chartWidth = width - (margin.left + margin.right);
-    chartHeight = height - (margin.top + margin.bottom);
-    // xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);    
-    xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);        
+
+    //calc its width and do round operation
+    var intTD = (chartWidth / 241).toFixed(0);
+    chartWidth = intTD * 241;
+    chartHeight = height - (margin.top + margin.bottom);    
+    xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);
     offset = (xScale.step() - xScale.bandwidth()) / 2;
     console.log(offset);
     console.log(xScale.paddingInner() * xScale.step());
-    td_width = xScale.step();         
+    console.log(xScale.bandwidth());
+    console.log(xScale.step());
+    td_width = xScale.step();
 }
-function setSize(data, wrapperElement) {    
+
+function setSize(data, wrapperElement) {
     svg = d3.select(wrapperElement).append("svg")
     axisLayer = svg.append("g").classed("axisLayer", true)
     chartLayer = svg.append("g").classed("chartLayer", true);
@@ -245,7 +233,7 @@ function setSize(data, wrapperElement) {
     chartLayer
         .attr("width", chartWidth)
         .attr("height", chartHeight)
-        .attr("transform", "translate(" + [margin.left, margin.top] + ")")    
+        .attr("transform", "translate(" + [margin.left, margin.top] + ")")
 
     xInScale.domain(legends).range([0, xScale.bandwidth()])
 
@@ -356,19 +344,19 @@ function drawAxis() {
 
 function dataManipulation(data, tblNumber, labels) {
     chart_data = data[tblNumber];
-    legends = Object.keys(chart_data).filter(function(d){
-    	if(removeKeys.includes(d)) return false;
-    	return true;
-    });    
+    legends = Object.keys(chart_data).filter(function(d) {
+        if (removeKeys.includes(d)) return false;
+        return true;
+    });
     var newdata = {};
     labels.forEach(function(label, i) {
         var tmp = [];
         legends.forEach(function(legend) {
-        	if(!removeKeys.includes(legend)){
-        		let newO = {};
-	            newO[legend] = chart_data[legend][i];
-	            tmp.push(newO);
-        	}            
+            if (!removeKeys.includes(legend)) {
+                let newO = {};
+                newO[legend] = chart_data[legend][i];
+                tmp.push(newO);
+            }
         })
         newdata[label] = tmp;
     })
@@ -377,25 +365,24 @@ function dataManipulation(data, tblNumber, labels) {
 
 function highlight4hours(left, nthKey) {
     var windowHeight = $('.breach-table-wrapper').outerHeight(true) + $('.bar-chart-wrap').outerHeight(true) + $('.table-wrapper').outerHeight(true) + 40;
-    $('.highlight-window').removeClass('hide');
-    // $('.highlight-window').css('top', $('#table_breaches').offset().top);
+    $('.highlight-window').removeClass('hide');    
     $('.highlight-window').css('top', "40px");
     var wW = 0;
     if (nthKey > 4) {
         wW = td_width * 4;
-    } else if(nthKey !=1){
+    } else if (nthKey != 1) {
         wW = nthKey * td_width;
-    }else if(nthKey == 1){
+    } else if (nthKey == 1) {
         wW = nthKey * td_width;
     }
     $('.highlight-window').css('width', wW);
     if (nthKey > 4) {
         left = left - td_width * 3;
-    } else if(nthKey !=1){
+    } else if (nthKey != 1) {
 
         left = left - td_width * (nthKey - 1);
-    }else if(nthKey==1){
-        left = left - td_width*(nthKey- 1);
+    } else if (nthKey == 1) {
+        left = left - td_width * (nthKey - 1);
     }
 
     $('.highlight-window').css('height', windowHeight);
@@ -431,11 +418,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
     }
 
     var newdata = dataManipulation(data[currentDate], tblNumber, labels);
-    if (tblNumber == 0) {
-        //first chart	
-        // setSize(newdata, wrapper);
-        // drawAxis();
-
+    if (tblNumber == 0) {        
         var new_chartdata = [];
         labels.forEach(function(label) {
             var tmp = {};
@@ -454,7 +437,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
                     tmp[tmp_key] = Object.values(g)[0];
             });
             stackedData.push(tmp);
-        });		
+        });
 
         svg = d3.select(wrapper).append("svg")
         axisLayer = svg.append("g").classed("axisLayer", true)
@@ -468,23 +451,30 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .attr("width", chartWidth)
             .attr("height", chartHeight)
             .attr("transform", "translate(" + [margin.left, margin.top] + ")")
-
-        // xScale.domain(labels)
-        //     .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
-
+    
         var area = d3.area()
             .curve(d3.curveCardinal)
-            .x(function(d) { return xScale(d.key) + xScale.bandwidth()/2; })
+            .x(function(d) {
+                return xScale(d.key) + xScale.bandwidth() / 2;
+            })
             .y0(chartHeight)
-            .y1(function(d) { return yScale(d['Forecast']); });
+            .y1(function(d) {
+                return yScale(d['Forecast']);
+            });
 
         var yScale1 = d3.scaleLinear();
-        yScale1.domain([0, d3.max(stackedData.map(function(d){return d['Breaches'];}))]).range([chartHeight, 0]);
+        yScale1.domain([0, d3.max(stackedData.map(function(d) {
+            return d['Breaches'];
+        }))]).range([chartHeight, 0]);
 
         var yScale2 = d3.scaleLinear();
-        yScale2.domain([0,d3.max(stackedData.map(function(d){return d['Attendances'];}))]).range([chartHeight, 0]);
+        yScale2.domain([0, d3.max(stackedData.map(function(d) {
+            return d['Attendances'];
+        }))]).range([chartHeight, 0]);
 
-        yScale.domain([0,d3.max(stackedData.map(function(d){return d['Forecast'];}))]).range([chartHeight, 0]);
+        yScale.domain([0, d3.max(stackedData.map(function(d) {
+            return d['Forecast'];
+        }))]).range([chartHeight, 0]);
 
         var line = d3.line()
             .x(function(d) {
@@ -495,13 +485,13 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             }).curve(d3.curveCardinal);
 
         drawAxis();
-        
+
         chartLayer.append("path")
-           .data([stackedData])
-           .attr("class", "area")
-           .attr("d", area)
-           .attr('fill','red')
-           .call(transition);
+            .data([stackedData])
+            .attr("class", "area")
+            .attr("d", area)
+            .attr('fill', 'red')
+            .call(transition);
 
         chartLayer.selectAll("rect")
             .data(stackedData).enter()
@@ -520,10 +510,10 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             })
             .attr("height", function(d) {
                 return Math.abs(yScale2(0) - yScale2(d['Attendances']));
-            })           
-        
+            })
+
         chartLayer.append("path")
-            .datum(stackedData)                    
+            .datum(stackedData)
             .attr("fill", "none")
             .attr("stroke", "red")
             .attr("stroke-linejoin", "round")
@@ -553,9 +543,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .attr("height", chartHeight)
             .attr("transform", "translate(" + [margin.left, margin.top] + ")")
 
-        // xScale.domain(labels)
-        //     .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
-        
         var yMax = d3.max(chart_data['Arrivals']);
         var yMin = d3.max(chart_data['Departures']);
 
@@ -584,7 +571,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .attr("y", function(d) {
                 return yScale(0)
             })
-            .attr("height", function(d) {            	
+            .attr("height", function(d) {
                 return Math.abs(yScale(0) - yScale(Object.values(d)[0][2]['Departures']));
             })
 
@@ -632,9 +619,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .attr("height", chartHeight)
             .attr("transform", "translate(" + [margin.left, margin.top] + ")")
 
-        // xScale.domain(labels)
-        //     .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
-
         var yMax = d3.max(new_chartdata.map(function(d) {
             return Object.values(d)[0].map(function(g) {
                 if ((Object.keys(g)[0] != "Ambulances") && (Object.keys(g)[0] != "Still in")) {
@@ -653,7 +637,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
         }));
 
         yMax += 2;
-        yMin -= 2;       
+        yMin -= 2;
 
         var stackedData = [];
         new_chartdata.forEach(function(d) {
@@ -690,7 +674,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .data(d3.stack().keys(stackKeys)(stackedData))
             .enter().append("g")
             .attr("class", "cost")
-            .attr("fill", function(d, i) {                
+            .attr("fill", function(d, i) {
                 return z(d.key);
             });
 
@@ -703,7 +687,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .attr("x", function(d) {
                 return xScale(d['data']['key']);
             })
-            .attr("y", function(d) {                
+            .attr("y", function(d) {
                 return yScale(d[1]);
             })
             .attr("height", function(d) {
@@ -743,7 +727,7 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             tmp[label] = newdata[label];
 
             new_chartdata.push(tmp);
-        })        
+        })
 
         drawChart(new_chartdata);
     } else if (tblNumber == 4) {
@@ -767,9 +751,6 @@ function drawAchart(cuDate, tblNumber, wrapper) {
             .attr("width", chartWidth)
             .attr("height", chartHeight)
             .attr("transform", "translate(" + [margin.left, margin.top] + ")")
-
-        // xScale.domain(labels)
-        //     .range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1)
 
         var yMax = d3.max(new_chartdata.map(function(d) {
             return Object.values(d)[0].map(function(g) {
@@ -841,7 +822,9 @@ function transition(path) {
 function tweenDash() {
     var l = this.getTotalLength(),
         i = d3.interpolateString("0," + l, l + "," + l);
-    return function (t) { return i(t); };
+    return function(t) {
+        return i(t);
+    };
 }
 
 // when scroll
