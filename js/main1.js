@@ -209,7 +209,7 @@ function setCommonSize(labels) {
     chartWidth = width - (margin.left + margin.right);
 
     //calc its width and do round operation
-    var intTD = (chartWidth / 241).toFixed(0);
+    var intTD = (chartWidth / 241).toFixed(1);
     chartWidth = intTD * 241;
     chartHeight = height - (margin.top + margin.bottom);    
     xScale.domain(labels).range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);
